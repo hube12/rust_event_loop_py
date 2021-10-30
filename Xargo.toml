@@ -1,0 +1,6 @@
+[dependencies.std]
+default-features = false
+features = [ "panic_unwind"]
+
+
+# xargo build --target x86_64-unknown-linux-gnu --release
