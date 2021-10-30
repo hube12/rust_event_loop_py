@@ -14,10 +14,10 @@
 // gcc -I../target -L../target/release -Wl,-rpath=../target/release -o example example.c -lrust_py -lpthread
 int main() {
     Runtime *runtime = create_runtime();
-    Channel *channel = create_client(runtime);
+    Client  *client = create_client(runtime);
 
     printf("Value:  %p\n", runtime);
-    printf("Value:  %p\n", channel);
+    printf("Value:  %p\n", client);
 
     time_t secs = 2;
     time_t startTime = time(NULL);
@@ -29,5 +29,7 @@ int main() {
             iter += 1;
         }
     }
+    destroy_client(client);
+    destroy_runtime(runtime);
 }
 

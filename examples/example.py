@@ -9,3 +9,5 @@ while True:
     time.sleep(2)
     print("Iter in python : ", it)
     it += 1
+r.destroy_client(c)
+r.destroy_runtime(rt)

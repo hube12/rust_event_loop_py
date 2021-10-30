@@ -94,8 +94,8 @@ pub extern "C" fn create_client(runtime: *mut Runtime) -> *mut Client {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn destroy_channel(channel: *mut crate::Client) {
-    if !channel.is_null() {
-        Box::from_raw(channel);
+pub unsafe extern "C" fn destroy_client(client: *mut crate::Client) {
+    if !client.is_null() {
+        Box::from_raw(client);
     };
 }

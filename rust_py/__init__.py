@@ -28,8 +28,8 @@ def create_client(runtime):
     return _native.lib.create_client(runtime)
 
 
-def destroy_channel(channel):
-    _native.lib.destroy_channel(channel)
+def destroy_client(client):
+    _native.lib.destroy_client(client)
 
 
 def create_runtime():
