@@ -1,0 +1,17 @@
+# This is the last tag before python 2 got yeeted out of manylinux 2010
+# https://github.com/pypa/cibuildwheel/blob/1.x/cibuildwheel/resources/pinned_docker_images.cfg
+FROM quay.io/pypa/manylinux2010_x86_64:2021-02-06-3d322a5 as builder
+
+COPY requirements-dev.txt /
+RUN /opt/python/cp27-cp27m/bin/pip2.7 install -r /requirements-dev.txt
+
+RUN curl --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+
+FROM builder
+WORKDIR /build
+COPY . .
+RUN cargo --version
+RUN /opt/python/cp27-cp27m/bin/python2.7 setup.py build
+RUN /opt/python/cp27-cp27m/bin/pip2.7 wheel --wheel-dir ./dist2 .
+RUN /opt/python/cp27-cp27m/bin/python2.7 setup.py bdist_wheel --python-tag cp27 --plat-name manylinux2010_x86_64

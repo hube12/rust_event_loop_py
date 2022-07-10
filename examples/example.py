@@ -1,13 +1,18 @@
-import time
+from rust_py import *
 
-import rust_py as r
 
-rt = r.create_runtime()
-c = r.create_client(rt)
-it = 0
-while True:
-    time.sleep(2)
-    print("Iter in python : ", it)
-    it += 1
-r.destroy_client(c)
-r.destroy_runtime(rt)
+def log_it(e, t):
+    # type: (PyLogLevel,PyString)->None
+    print(e, t)
+
+
+logger = PyLogger(log_it)
+logger.configure(PyLogLevel.Info, PyLogTimeFormat.Human, PyLogFormat.Pretty)
+
+runtime = PyRuntime()
+client = PyClient(runtime)
+
+for i in range(1000):
+    msg = PyMessage.from_string("test")
+    client.send(msg)
+    client.receive()

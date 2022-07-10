@@ -10,7 +10,12 @@ crate-type = ["rlib", "cdylib", "staticlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio={version="1",features=["full"]}
+tokio = { version = "1", features = ["full"] }
+tracing-subscriber = { version = "0.3.14", features = ["time", "json"] }
+tracing = "0.1.35"
+anyhow = "1.0.58"
+serde = { version = "1.0.138", features = ["derive"] }
+tracing-core = "0.1.28"
 
 [build-dependencies]
 cbindgen = "0.17.0"

@@ -1,40 +1,20 @@
-from ctypes import *
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
 
-from cffi import FFI
-from enum import IntEnum
+# vim: fileencoding=utf-8 filetype=python autoindent expandtab shiftwidth=4 softtabstop=4 tabstop=4
 
-from . import _native
+__all__ = ["PyLogLevel", "PyLogFormat", "PyLogTimeFormat", "PyLogger", "PyClient", "PyRuntime", "PyMessage",
+           "__backend_version__"]
 
-ffi = FFI()
+__version__ = "1.0.0"
 
+# @formatter:off
+from .utils             import __backend_version__                                  # noqa
+from .logging           import PyLogLevel, PyLogFormat, PyLogTimeFormat, PyLogger   # noqa
+from .client            import PyClient                                             # noqa
+from .message           import PyMessage                                            # noqa
+from .runtime           import PyRuntime                                            # noqa
+# @formatter:on
 
-class CtypesEnum(IntEnum):
-    """A ctypes-compatible IntEnum superclass."""
-
-    @classmethod
-    def from_param(cls, obj):
-        return int(obj)
-
-
-class Channel(Structure):
-    pass
-
-
-class Runtime(Structure):
-    pass
-
-
-def create_client(runtime):
-    return _native.lib.create_client(runtime)
-
-
-def destroy_client(client):
-    _native.lib.destroy_client(client)
-
-
-def create_runtime():
-    return _native.lib.create_runtime()
-
-
-def destroy_runtime(runtime):
-    _native.lib.destroy_runtime(runtime)
+if __backend_version__ != __version__:
+    raise Exception("Backend version did not match the python runtime version, aborting as mismatch is ill advised")
