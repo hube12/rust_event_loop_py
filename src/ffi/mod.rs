@@ -6,6 +6,9 @@ pub use ffi_logging::{FFILogFormat, FFILogLevel, FFILogTimeFormat, FFILogger, FF
 pub use ffi_message::FFIMessage;
 pub use ffi_null::FFINull;
 pub use ffi_runtime::FFIRuntime;
+pub use ffi_subscriber::{FFISEvent, FFISubscriber};
+pub use ffi_runner::FFIRunner;
+pub use ffi_client_handle::FFIClientHandle;
 
 pub mod ffi_array;
 pub mod ffi_client;
@@ -15,3 +18,6 @@ pub mod ffi_logging;
 pub mod ffi_message;
 pub mod ffi_null;
 pub mod ffi_runtime;
+pub mod ffi_subscriber;
+pub mod ffi_runner;
+pub mod ffi_client_handle;

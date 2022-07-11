@@ -36,9 +36,11 @@ impl FFIMessage {
         }
 
         match CStr::from_ptr(ptr).to_str() {
-            Ok(s) => FFIError::from_value(FFIMessage(Message {
-                message: String::from(s),
-            })),
+            Ok(s) => {
+                FFIError::from_value(FFIMessage(Message {
+                    message: String::from(s),
+                }))
+            },
             Err(error) => FFIError::from(anyhow!(error)),
         }
     }

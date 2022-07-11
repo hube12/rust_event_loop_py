@@ -30,6 +30,7 @@ use crate::ffi::{
 thread_local! {
    pub static LOG_BUFFER: std::cell::RefCell<Vec<u8>> = std::cell::RefCell::new(Vec::new());
 }
+
 #[repr(u8)]
 pub enum FFILogLevel {
     /// The "trace" level.
@@ -81,15 +82,15 @@ pub enum FFILogFormat {
 #[repr(C)]
 pub struct FFILoggingConfig {
     /// Logging Level
-    pub(crate) level:       FFILogLevel,
+    pub(crate) level: FFILogLevel,
     /// Time format
     pub(crate) time_format: FFILogTimeFormat,
     /// Log output format
-    pub(crate) log_format:  FFILogFormat,
+    pub(crate) log_format: FFILogFormat,
     /// Show log level
-    pub(crate) show_level:  bool,
+    pub(crate) show_level: bool,
     /// Show where was the log issued in Rust
-    pub(crate) show_trace:  bool,
+    pub(crate) show_trace: bool,
 }
 
 #[repr(C)]
@@ -131,8 +132,7 @@ impl FFILogger {
     }
 }
 
-impl FFISafeMove for FFILogger {
-}
+impl FFISafeMove for FFILogger {}
 
 #[no_mangle]
 pub extern "C" fn create_logger_config(
@@ -218,7 +218,7 @@ impl FFILoggingConfig {
                     FFILogFormat::FFILogFormatCompact => Box::new(builder.compact().finish()),
                     FFILogFormat::FFILogFormatPretty => Box::new(builder.pretty().finish()),
                 }
-            },
+            }
             FFILogTimeFormat::FFILogTimeFormatRfc3339 => {
                 let builder = builder.with_timer(UtcTime::rfc_3339());
                 match self.log_format {
@@ -227,7 +227,7 @@ impl FFILoggingConfig {
                     FFILogFormat::FFILogFormatCompact => Box::new(builder.compact().finish()),
                     FFILogFormat::FFILogFormatPretty => Box::new(builder.pretty().finish()),
                 }
-            },
+            }
             FFILogTimeFormat::FFILogTimeFormatSystem => {
                 let builder = builder.with_timer(SystemTime::default());
                 match self.log_format {
@@ -236,7 +236,7 @@ impl FFILoggingConfig {
                     FFILogFormat::FFILogFormatCompact => Box::new(builder.compact().finish()),
                     FFILogFormat::FFILogFormatPretty => Box::new(builder.pretty().finish()),
                 }
-            },
+            }
             FFILogTimeFormat::FFILogTimeFormatUpTime => {
                 let builder = builder.with_timer(Uptime::default());
                 match self.log_format {
@@ -245,14 +245,14 @@ impl FFILoggingConfig {
                     FFILogFormat::FFILogFormatCompact => Box::new(builder.compact().finish()),
                     FFILogFormat::FFILogFormatPretty => Box::new(builder.pretty().finish()),
                 }
-            },
+            }
         }
     }
 }
 
 struct Adapter {
     handler: FFILogger,
-    inner:   Box<dyn tracing::Subscriber + Send + Sync + 'static>,
+    inner: Box<dyn tracing::Subscriber + Send + Sync + 'static>,
 }
 
 impl tracing::Subscriber for Adapter {

@@ -1,24 +1,15 @@
 use crate::{ClientHandle, Message};
 use anyhow::anyhow;
 
-use crate::ffi::{
-    ffi_runtime::FFIRuntimeHandle,
-    FFIError,
-    FFIInner,
-    FFIMessage,
-    FFIRuntime,
-    FFISafe,
-    FFISafeMove,
-};
+use crate::ffi::{ffi_runtime::FFIRuntimeHandle, FFIClientHandle, FFIError, FFIInner, FFIMessage, FFIRuntime, FFISafe, FFISafeMove};
 
 pub struct FFIClient {
-    handle:         ClientHandle,
-    receiver:       tokio::sync::broadcast::Receiver<Message>,
-    runtime_handle: FFIRuntimeHandle,
+    pub(crate) handle: FFIClientHandle,
+    pub(crate) receiver: tokio::sync::broadcast::Receiver<Message>,
+    pub(crate) runtime_handle: FFIRuntimeHandle,
 }
 
-impl FFISafe for FFIClient {
-}
+impl FFISafe for FFIClient {}
 
 #[allow(dead_code)]
 impl FFIClient {
@@ -33,7 +24,9 @@ impl FFIClient {
             Err(e) => return FFIError::from(anyhow!(e)),
         };
         FFIError::from_value(Self {
-            handle,
+            handle: FFIClientHandle {
+                handle,
+            },
             receiver,
             runtime_handle: rt.handle(),
         })
@@ -54,6 +47,7 @@ impl FFIClient {
             Err(err) => FFIError::from(anyhow!(err)),
         }
     }
+
     #[no_mangle]
     pub extern "C" fn client_send(
         client: *mut Self,
@@ -67,8 +61,10 @@ impl FFIClient {
             Ok(x) => x,
             Err(error) => return error,
         }
-        .inner();
-        match client.handle.send_msg(message) {
+            .inner();
+
+
+        match client.handle.handle.send_msg(message) {
             Ok(recv_count) => FFIError::from_value(recv_count as std::os::raw::c_ulong),
             Err(err) => FFIError::from(anyhow!(err)),
         }

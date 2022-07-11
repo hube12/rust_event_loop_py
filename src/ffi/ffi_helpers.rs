@@ -79,7 +79,7 @@ pub(crate) trait FFISafeMove<Input = Self> {
         let mut ptr = std::ptr::null_mut();
         std::mem::swap(unsafe_ref, &mut ptr); // swap the previous pointer with null
         Ok(unsafe { *Box::from_raw(ptr) }) // make a copy
-                                           // drop ptr
+        // drop ptr
     }
 }
 
@@ -147,4 +147,23 @@ pub unsafe extern "C" fn destroy_array(ptr_arr: *mut std::ffi::c_void) {
         let _ = Vec::from_raw_parts(arr.ptr, arr.len, arr.capacity);
     }
     destroy_pointer(ptr_arr);
+}
+
+
+pub struct FFITriple<T, TT, TTT> {
+    pub(crate) first: Option<T>,
+    pub(crate) second: Option<TT>,
+    pub(crate) third: Option<TTT>,
+}
+
+impl<T, TT, TTT> FFISafe for FFITriple<T, TT, TTT> {}
+
+impl<T, TT, TTT> From<(T, TT, TTT)> for FFITriple<T, TT, TTT> {
+    fn from((a, b, c): (T, TT, TTT)) -> Self {
+        Self {
+            first: Some(a),
+            second: Some(b),
+            third: Some(c),
+        }
+    }
 }

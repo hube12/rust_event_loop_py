@@ -3,7 +3,7 @@
 
 # vim: fileencoding=utf-8 filetype=python autoindent expandtab shiftwidth=4 softtabstop=4 tabstop=4
 from .event import PyEvent
-from .utils import _native, Structure, handle_error
+from .utils import ffi, lib, Structure, handle_error
 
 
 class PySubscriber(Structure):
@@ -20,7 +20,7 @@ class PySubscriber(Structure):
         return self.__inner
 
     def __del__(self):
-        _native.lib.destroy_pointer(self.inner)
+        lib.destroy_pointer(self.inner)
 
     def subscribe(self, event_type, callback, runtime):
         # type: (PySubscriber, PyEventType, Callable[[PyEvent],None], PyRuntime) -> None
@@ -29,7 +29,7 @@ class PySubscriber(Structure):
             raise Exception("Not a valid callback, should be Callable[[PyEvent],None]")
 
         def wrapper(callback_fn):
-            @_native.ffi.callback("void(FFISEvent *)")
+            @ffi.callback("void(FFISEvent *)")
             def receive_event(event):
                 callback_fn(PyEvent(event))
 
@@ -39,4 +39,4 @@ class PySubscriber(Structure):
         self.__callbacks.append(callback)
         self.__wrappers.append(wrapper)
         # this returns a FFINull, no need to check it
-        assert handle_error(_native.lib.subscribe(self.inner, event_type.inner, wrapper, runtime.inner)) is None
+        assert handle_error(lib.subscribe(self.inner, event_type.inner, wrapper, runtime.inner)) is None
